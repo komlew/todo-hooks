@@ -15,11 +15,13 @@ const App = () => {
     {
       id: getId(),
       done: false,
+      ref: React.createRef(),
       value: 'Hello World!',
     },
     {
       id: getId(),
       done: false,
+      ref: React.createRef(),
       reserved: true,
       value: '',
     },
@@ -37,12 +39,23 @@ const App = () => {
           todos.concat({
             id: getId(),
             done: false,
+            ref: React.createRef(),
             reserved: true,
             value: '',
           })
         );
       } else {
         setTodo(todos);
+      }
+    }
+  };
+
+  const passFocus = (e, todo) => {
+    if (e.keyCode === 13) {
+      const index = todoList.indexOf(todo);
+      const nextEl = todoList[index + 1];
+      if (nextEl && nextEl.ref && nextEl.ref.current) {
+        nextEl.ref.current.focus();
       }
     }
   };
@@ -70,8 +83,10 @@ const App = () => {
         {todoList.map(todo => (
           <Todo key={todo.id}>
             <TodoInput
+              ref={todo.ref}
               value={todo.value}
               data={todo.id}
+              onKeyDown={e => passFocus(e, todo)}
               onChange={e => changeTodo(e, todo.id)}
               onBlur={e => blurTodo(e, todo.id)}
               placeholder="Add ToDo..."
