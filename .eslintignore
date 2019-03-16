@@ -1,4 +1,5 @@
 /dist/**
 /docs/**
 /build/**
-**/*.json
+/flow-typed/**
+*.json

@@ -1,4 +1,5 @@
-node_modules
+flow-typed/
+node_modules/
 .DS_Store
 .vscode
 ._*

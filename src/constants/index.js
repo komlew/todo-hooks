@@ -1,12 +1,15 @@
-const today = new Date().toLocaleDateString();
+// @flow
+import type { Copy, KeyCodes } from '../types';
 
-const copy = {
+const today: string = new Date().toLocaleDateString();
+
+const copy: Copy = {
   add: 'Add ToDo...',
   done: 'Done',
   doneIcon: '✔',
 };
 
-const keyCodes = {
+const keyCodes: KeyCodes = {
   enter: 13,
 };
 
