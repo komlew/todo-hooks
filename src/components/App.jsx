@@ -1,31 +1,10 @@
 import React, { useState } from 'react';
 import { Wrapper, Title, List, Todo, TodoInput, TodoButton } from '../styles';
-
-const getId = () =>
-  Math.random()
-    .toString()
-    .slice(2, 8);
-
-const getTasks = list => `(${list.filter(item => item.done).length}/${list.length - 1})`;
-
-const today = new Date().toLocaleDateString();
+import { today, copy, keyCodes } from '../constants';
+import { getTasks, getDefaultTodo } from '../helpers';
 
 const App = () => {
-  const [todoList, setTodo] = useState([
-    {
-      id: getId(),
-      done: false,
-      ref: React.createRef(),
-      value: 'Hello World!',
-    },
-    {
-      id: getId(),
-      done: false,
-      ref: React.createRef(),
-      reserved: true,
-      value: '',
-    },
-  ]);
+  const [todoList, setTodo] = useState([getDefaultTodo(React)]);
 
   const changeTodo = (e, id) => {
     const { value } = e.target;
@@ -35,15 +14,7 @@ const App = () => {
       todo.value = value;
       if (todo.reserved) {
         delete todo.reserved;
-        setTodo(
-          todos.concat({
-            id: getId(),
-            done: false,
-            ref: React.createRef(),
-            reserved: true,
-            value: '',
-          })
-        );
+        setTodo(todos.concat(getDefaultTodo(React)));
       } else {
         setTodo(todos);
       }
@@ -51,7 +22,7 @@ const App = () => {
   };
 
   const passFocus = (e, todo) => {
-    if (e.keyCode === 13) {
+    if (e.keyCode === keyCodes.enter) {
       const index = todoList.indexOf(todo);
       const nextEl = todoList[index + 1];
       if (nextEl && nextEl.ref && nextEl.ref.current) {
@@ -89,13 +60,13 @@ const App = () => {
               onKeyDown={e => passFocus(e, todo)}
               onChange={e => changeTodo(e, todo.id)}
               onBlur={e => blurTodo(e, todo.id)}
-              placeholder="Add ToDo..."
+              placeholder={copy.add}
               done={todo.done}
             />
             {todo.reserved || (
               <TodoButton onClick={() => toggleTodo(todo.id)} done={todo.done}>
-                <span role="img" aria-label="Done">
-                  ✔
+                <span role="img" aria-label={copy.done}>
+                  {copy.doneIcon}
                 </span>
               </TodoButton>
             )}
