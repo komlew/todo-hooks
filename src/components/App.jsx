@@ -62,6 +62,7 @@ const App = () => {
               onBlur={e => blurTodo(e, todo.id)}
               placeholder={copy.add}
               done={todo.done}
+              autoFocus={todoList.length === 1}
             />
             {todo.reserved || (
               <TodoButton onClick={() => toggleTodo(todo.id)} done={todo.done}>
