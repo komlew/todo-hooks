@@ -3,12 +3,14 @@ if (!process || !process.env || typeof process.env.PWD !== 'string') {
 }
 
 const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackTemplate = require('html-webpack-template');
 
 const outputFolder = process.env.PWD;
 
-module.exports = {
+module.exports = env => ({
+  mode: env.production ? 'production' : 'development',
   entry: {
     app: ['./src/index.jsx'],
   },
@@ -16,12 +18,17 @@ module.exports = {
     modules: ['node_modules'],
     extensions: ['.js', '.json', '.jsx'],
   },
-  output: {
-    filename: '[name].bundle.js',
-    path: outputFolder,
-    publicPath: 'https://localhost:3000/',
-    sourceMapFilename: '[name].bundle.js.map',
-  },
+  output: env.production
+    ? {
+        filename: '[name].bundle.js',
+        path: `${outputFolder}/docs`,
+      }
+    : {
+        filename: '[name].bundle.js',
+        path: outputFolder,
+        publicPath: 'https://localhost:3000/',
+        sourceMapFilename: '[name].bundle.js.map',
+      },
   module: {
     rules: [
       {
@@ -31,20 +38,34 @@ module.exports = {
       },
     ],
   },
-  devServer: {
-    contentBase: outputFolder,
-    clientLogLevel: 'none',
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    },
-    noInfo: true,
-    https: true,
-    port: 3000,
-    hot: true,
-  },
-  devtool: 'source-map',
+  devServer: env.production
+    ? {}
+    : {
+        contentBase: outputFolder,
+        clientLogLevel: 'none',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+        noInfo: true,
+        https: true,
+        port: 3000,
+        hot: true,
+      },
+  devtool: env.production ? '' : 'source-map',
+  optimization: env.production
+    ? {
+        minimizer: [
+          new TerserPlugin({
+            terserOptions: {
+              output: {
+                comments: false,
+              },
+            },
+          }),
+        ],
+      }
+    : {},
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       inject: false,
       template: HtmlWebpackTemplate,
@@ -55,7 +76,7 @@ module.exports = {
         '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">' +
         '<style>body{margin:0;font:18px/1.2 Helvetica,Arial,sans-serif}</style>',
       lang: 'en-US',
-      title: 'TheMenu',
+      title: 'To Do App',
     }),
-  ],
-};
+  ].concat(env.production ? [] : [new webpack.HotModuleReplacementPlugin()]),
+});
