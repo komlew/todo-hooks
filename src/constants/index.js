@@ -13,4 +13,8 @@ const keyCodes: KeyCodes = {
   enter: 13,
 };
 
-export { today, copy, keyCodes };
+const timers: KeyCodes = {
+  debounceSave: 500,
+};
+
+export { today, copy, keyCodes, timers };

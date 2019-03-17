@@ -1,16 +1,17 @@
 // @flow
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Wrapper, Title, List, Todo, TodoInput, TodoButton } from '../styles';
 import { today, copy, keyCodes } from '../constants';
-import { getTasks, getDefaultTodo, findByID, filterOutByID } from '../helpers';
+import { getTasks, getDefaultTodo, findByID, filterOutByID, getStorage, setStorageDebounced } from '../helpers';
 import type { Todo as TypeTodo } from '../types';
 
 const App = () => {
-  const [todoList, setTodo] = useState([getDefaultTodo()]);
+  const [todoList, setTodo] = useState(getStorage());
+  useEffect(() => setStorageDebounced(todoList), [todoList]);
 
   const changeTodo = (e: SyntheticInputEvent<HTMLElement>, id: string) => {
     const { value } = e.target;
-    const todos = [...todoList];
+    const todos: Array<TypeTodo> = [...todoList];
     const todo: ?TypeTodo = findByID(todos, id);
     if (todo) {
       todo.value = value;
@@ -28,7 +29,7 @@ const App = () => {
       return;
     }
     const index = todoList.indexOf(todo);
-    const todos: Array<TypeTodo> = todoList;
+    const todos: Array<TypeTodo> = [...todoList];
     const nextTodo: ?TypeTodo = todos[index + 1];
     if (nextTodo != null && nextTodo.ref && nextTodo.ref.current) {
       const el: HTMLElement = nextTodo.ref.current;

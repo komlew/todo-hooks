@@ -11,6 +11,12 @@ type KeyCodes = {
   [string]: number,
 };
 
+type TodoStored = {|
+  id: string,
+  done: boolean,
+  value: string,
+|};
+
 type Todo = {|
   id: string,
   done: boolean,
@@ -19,4 +25,4 @@ type Todo = {|
   value: string,
 |};
 
-export type { Copy, KeyCodes, Todo };
+export type { Copy, KeyCodes, TodoStored, Todo };
