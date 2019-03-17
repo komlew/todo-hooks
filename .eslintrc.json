@@ -1,10 +1,12 @@
 {
   "parser": "babel-eslint",
   "extends": ["airbnb", "plugin:prettier/recommended"],
-  "plugins": ["prettier", "flowtype"],
+  "plugins": ["prettier", "flowtype", "react-hooks"],
   "rules": {
     "prettier/prettier": "error",
-    "flowtype/define-flow-type": "warn"
+    "flowtype/define-flow-type": "warn",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
   "parserOptions": {
     "ecmaVersion": 6,
